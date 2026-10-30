@@ -4,7 +4,7 @@ import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import type { LinkKind, LinkSection } from "@/lib/types";
+import { TIP_FORM_POSITIONS, type LinkKind, type LinkSection, type TipFormPosition } from "@/lib/types";
 
 export type FormState = { error?: string; ok?: string } | undefined;
 
@@ -173,6 +173,22 @@ export async function moveLink(id: string, direction: "up" | "down") {
   refreshSite();
 }
 
+// ----------------------------------------------------------------- tips
+
+export async function setTipRead(id: string, next: boolean) {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from("tips").update({ is_read: next }).eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin", "layout");
+}
+
+export async function deleteTip(id: string) {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from("tips").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin", "layout");
+}
+
 // ------------------------------------------------------------- settings
 
 export async function saveSettings(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -180,12 +196,19 @@ export async function saveSettings(_prev: FormState, formData: FormData): Promis
   const site_name = String(formData.get("site_name") ?? "").trim();
   if (!site_name) return { error: "Site name is required." };
 
+  const tip_form_position = String(formData.get("tip_form_position") ?? "bottom") as TipFormPosition;
+  if (!TIP_FORM_POSITIONS.some((p) => p.value === tip_form_position)) {
+    return { error: "Pick a place for the tip form." };
+  }
+
   const { error } = await supabase
     .from("site_settings")
     .update({
       site_name,
       tagline: String(formData.get("tagline") ?? "").trim() || null,
       show_siren: formData.get("show_siren") === "on",
+      show_tip_form: formData.get("show_tip_form") === "on",
+      tip_form_position,
     })
     .eq("id", true);
   if (error) return { error: error.message };

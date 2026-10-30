@@ -1,7 +1,8 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import type { Link, SiteSettings } from "@/lib/types";
+import type { Link, SiteSettings, TipFormPosition } from "@/lib/types";
+import TipForm from "./TipForm";
 import styles from "./page.module.css";
 
 /** Cache tag the admin actions expire so edits show up instantly. */
@@ -56,7 +57,7 @@ function Headline({ link, big = false }: { link: Link; big?: boolean }) {
   );
 }
 
-function Column({ links }: { links: Link[] }) {
+function Column({ links, children }: { links: Link[]; children?: React.ReactNode }) {
   const stories = links.filter((l) => l.kind === "story");
   const resources = links.filter((l) => l.kind === "resource");
   return (
@@ -78,6 +79,7 @@ function Column({ links }: { links: Link[] }) {
           </ul>
         </>
       )}
+      {children}
     </div>
   );
 }
@@ -104,6 +106,11 @@ export default async function Home() {
   const by = (s: Link["section"]) => links.filter((l) => l.section === s);
   const siren = settings?.show_siren === false ? [] : by("siren");
   const siteName = settings?.site_name ?? "THE WIRE REPORT";
+
+  // The tip form can be switched off or placed in a column / below the page from the back office.
+  const tipPosition = settings?.tip_form_position ?? "bottom";
+  const tipIn = (where: TipFormPosition) =>
+    settings?.show_tip_form !== false && tipPosition === where ? <TipForm siteName={siteName} /> : null;
 
   const latest = links.reduce<string | null>(
     (max, l) => (!max || l.updated_at > max ? l.updated_at : max),
@@ -153,10 +160,12 @@ export default async function Home() {
       <hr className={styles.rule} />
 
       <section className={styles.columns}>
-        <Column links={by("col1")} />
-        <Column links={by("col2")} />
-        <Column links={by("col3")} />
+        <Column links={by("col1")}>{tipIn("col1")}</Column>
+        <Column links={by("col2")}>{tipIn("col2")}</Column>
+        <Column links={by("col3")}>{tipIn("col3")}</Column>
       </section>
+
+      {tipIn("bottom")}
 
       <footer className={styles.footer}>
         © {new Date().getFullYear()} {siteName}

@@ -3,6 +3,8 @@ import type { SiteSettings } from "@/lib/types";
 import SettingsForm from "./SettingsForm";
 import s from "../../admin.module.css";
 
+export const instant = false; // per-user admin page; allowed to block
+
 export default async function SettingsPage() {
   const { supabase } = await requireAdmin();
   const { data } = await supabase.from("site_settings").select("*").maybeSingle();

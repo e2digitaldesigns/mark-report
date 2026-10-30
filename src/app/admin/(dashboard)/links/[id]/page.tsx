@@ -6,6 +6,8 @@ import LinkForm from "../LinkForm";
 import { DeleteButton } from "./DeleteButton";
 import s from "../../../admin.module.css";
 
+export const instant = false; // per-user admin page; allowed to block
+
 export default async function EditLinkPage({ params }: PageProps<"/admin/links/[id]">) {
   const { id } = await params;
   const { supabase } = await requireAdmin();

@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { saveSettings } from "../../actions";
-import type { SiteSettings } from "@/lib/types";
+import { TIP_FORM_POSITIONS, type SiteSettings } from "@/lib/types";
 import s from "../../admin.module.css";
 
 export default function SettingsForm({ settings }: { settings: SiteSettings | null }) {
@@ -28,7 +28,22 @@ export default function SettingsForm({ settings }: { settings: SiteSettings | nu
           <input type="checkbox" name="show_siren" defaultChecked={settings?.show_siren ?? true} />
           Show the siren lead headline
         </label>
+        <label className={s.check}>
+          <input type="checkbox" name="show_tip_form" defaultChecked={settings?.show_tip_form ?? true} />
+          Show the “Send news tips” form
+        </label>
       </div>
+
+      <label className={s.field}>
+        <span className={s.label}>Where the tip form appears</span>
+        <select className={s.select} name="tip_form_position" defaultValue={settings?.tip_form_position ?? "bottom"}>
+          {TIP_FORM_POSITIONS.map((p) => (
+            <option key={p.value} value={p.value}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+      </label>
 
       <div className={s.formActions}>
         <button className={s.btn} disabled={pending}>

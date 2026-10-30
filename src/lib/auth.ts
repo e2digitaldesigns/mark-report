@@ -1,4 +1,5 @@
 import "server-only";
+import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -7,6 +8,8 @@ import { createClient } from "@/lib/supabase/server";
  * RLS enforces the same rule in the database — this just gives a nice UX.
  */
 export async function requireAdmin() {
+  // getClaims() reads Date.now() to check token expiry; opt into request time first.
+  await connection();
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;

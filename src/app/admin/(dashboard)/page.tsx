@@ -11,6 +11,8 @@ const fmt = new Intl.DateTimeFormat("en-US", {
   minute: "2-digit",
 });
 
+export const instant = false; // per-user admin page; allowed to block
+
 export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
   const { supabase } = await requireAdmin();
   const params = await searchParams;

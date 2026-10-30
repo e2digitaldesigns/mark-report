@@ -185,6 +185,55 @@
   text-decoration: underline;
 }
 
+.tips {
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+}
+
+.tipsLabel {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.tipsBox {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: 180px;
+  font: inherit;
+  border: 1px solid #767676;
+  padding: 4px;
+  resize: vertical;
+}
+
+.tipsBtn {
+  margin-top: 4px;
+  font: inherit;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.tipsHp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.tipsOk,
+.tipsError {
+  margin-top: 6px;
+}
+
+.tipsError {
+  color: #c00;
+}
+
 .footer {
   margin-top: 40px;
   text-align: center;

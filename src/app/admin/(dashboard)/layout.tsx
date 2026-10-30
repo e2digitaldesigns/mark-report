@@ -29,6 +29,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <nav className={s.nav}>
           <Link href="/admin">Headlines</Link>
           <Link href="/admin/links/new">New</Link>
+          <Link href="/admin/tips">Tips</Link>
           <Link href="/admin/settings">Settings</Link>
           <a href="/" target="_blank" rel="noopener">
             View site ↗
